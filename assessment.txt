@@ -1,0 +1,51 @@
+1.   Creating Table structure
+CREATE TABLE SCHEMA.customer(
+'Customer_Name' VARCHAR(255) NOT NULL,
+'Customer_Id' VARCHAR(18)NOT NULL,
+'Open_Date' date NOT NULL,
+'Last_Consulted_Date' date NULL,
+'Vaccination_Id' int NULL,
+'Dr_Name' VARCHAR(18) NULL,
+'State' CHAR(5) NULL,
+'Country' CHAR(5) NULL,
+'DOB' date NULL,
+'Is_Active' CHAR(1) NULL,
+PRIMARY KEY('Customer_Name')
+);
+
+2. Using MYSQL
+
+convert(load_file("path/filename.txt")using encoding format)
+into lv_data;
+
+loop_label:LOOP
+SELECT instr(lv_data,'\n')
+INTO lv_temp_p;
+
+SELECT substr(lv,1,lv_temp_p-1)
+INTO lv_line;
+
+IF(length(SUBSTRING_INDEX(SUBSTRING_INDEX(lv_line, ',',1),',',-1)) >0)
+insert into schema.customer(Customer_Name,Customer_Id,Open_Date,Last_Consulted_Date,Vaccination_Id,Dr_Name,State,Country,DOB,Is_Active)
+values(SUBSTRING_INDEX(SUBSTRING_INDEX(lv_line, ',',1),',',-1),
+       SUBSTRING_INDEX(SUBSTRING_INDEX(lv_line, ',',2),',',-1),
+       SUBSTRING_INDEX(SUBSTRING_INDEX(lv_line, ',',3),',',-1),
+       SUBSTRING_INDEX(SUBSTRING_INDEX(lv_line, ',',4),',',-1),
+       SUBSTRING_INDEX(SUBSTRING_INDEX(lv_line, ',',5),',',-1),
+       SUBSTRING_INDEX(SUBSTRING_INDEX(lv_line, ',',6),',',-1),
+       SUBSTRING_INDEX(SUBSTRING_INDEX(lv_line, ',',7),',',-1),
+       SUBSTRING_INDEX(SUBSTRING_INDEX(lv_line, ',',8),',',-1),
+       SUBSTRING_INDEX(SUBSTRING_INDEX(lv_line, ',',9),',',-1),
+       SUBSTRING_INDEX(SUBSTRING_INDEX(lv_line, ',',10),',',-1));
+
+END IF;
+
+SELECT substr(lv_data,lv_temp_p+1)
+INTO lv_data;
+
+IF lv_temp <= 0 THEN
+   LEAVE loop_label;
+END IF;
+
+ITERATE loop_label;
+END LOOP;
